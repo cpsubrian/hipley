@@ -1,6 +1,8 @@
 var fs = require('fs')
 var path = require('path')
 var webpack = require('webpack')
+var _ = require('lodash')
+var extend = require('extend')
 
 var ROOT = process.env.__root
 var PKG = require(path.resolve(ROOT, 'package.json'))
@@ -11,6 +13,17 @@ var BUILD = path.resolve(ROOT, process.env.__dest || 'build')
 var settings = {}
 try {
   settings = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.hipleyrc')))
+} catch (e) {}
+
+// Read in our local .babelrc. Also try to read and merge in the app's copy.
+var babelrc = {}
+var appbabelrc = {}
+try {
+  babelrc =  JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc')))
+  if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
+    appbabelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
+    babelrc = extend(true, {}, babelrc, appbabelrc)
+  }
 } catch (e) {}
 
 module.exports = function (options) {
@@ -30,7 +43,7 @@ module.exports = function (options) {
       publicPath: '/'
     },
     resolve: {
-      modulesDirectories: ['node_modules', path.resolve(__dirname, 'node_modules')],
+      root: [ROOT, path.resolve(__dirname, 'node_modules')],
       extensions: ['', '.js', '.jsx']
     },
     resolveLoader: {
@@ -38,7 +51,7 @@ module.exports = function (options) {
     },
     module: {
       loaders: [
-        { test: /\.js?$/, loaders: ['babel'], include: SRC }
+        { test: /\.js?$/, loader: 'babel', include: SRC, query: babelrc }
       ]
     },
     plugins: [
