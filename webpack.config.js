@@ -15,14 +15,30 @@ try {
   settings = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.hipleyrc')))
 } catch (e) {}
 
-// Read in our local .babelrc. Also try to read and merge in the app's copy.
-var babelrc = {}
-var appbabelrc = {}
+// Read app's babelrc and merge into our options.
+var babel = {
+  'stage': 0,
+  'optional': [
+    'runtime'
+  ],
+  'plugins': [
+    require('babel-plugin-react-transform')
+  ],
+  'extra': {
+    'react-transform': [{
+      'target': 'react-transform-webpack-hmr',
+      'imports': ['react'],
+      'locals': ['module']
+    }, {
+      'target': 'react-transform-catch-errors',
+      'imports': ['react', 'redbox-react']
+    }]
+  }
+}
 try {
-  babelrc =  JSON.parse(fs.readFileSync(path.resolve(__dirname, '.babelrc')))
   if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
-    appbabelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
-    babelrc = extend(true, {}, babelrc, appbabelrc)
+    babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
+    babel = extend(true, {}, babel, babelrc)
   }
 } catch (e) {}
 
@@ -51,13 +67,14 @@ module.exports = function (options) {
     },
     module: {
       loaders: [
-        { test: /\.js?$/, loader: 'babel', include: SRC, query: babelrc }
+        { test: /\.js?$/, loader: 'babel', include: SRC }
       ]
     },
     plugins: [
       new webpack.NoErrorsPlugin(),
       new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js')
-    ]
+    ],
+    babel: babel
   }
 
   // Set root.
