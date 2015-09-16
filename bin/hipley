@@ -37,7 +37,7 @@ program.parse(process.argv)
 
 // Helper to merge options into env.
 function getEnv (env) {
-  return _.pick(_.extend({__root: process.cwd()}, process.env, env || {}), _.identity)
+  return _.pick(_.extend({__root: hipley.root}, process.env, env || {}), _.identity)
 }
 
 // Helper to spawn a command.
@@ -75,7 +75,7 @@ if (program.dev) {
     run({
       cmd: args.shift(),
       args: args,
-      cwd: cwd,
+      cwd: hipley.root,
       env: getEnv()
     })
   }
