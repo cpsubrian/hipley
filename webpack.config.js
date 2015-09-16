@@ -3,44 +3,12 @@ var path = require('path')
 var webpack = require('webpack')
 var _ = require('lodash')
 var extend = require('extend')
+var hipley = require('./')
 
-var ROOT = process.env.__root
+var ROOT = hipley.root
 var PKG = require(path.resolve(ROOT, 'package.json'))
-var SRC = path.resolve(ROOT, (process.env.__src || 'src'), 'js')
-var BUILD = path.resolve(ROOT, process.env.__dest || 'build')
-
-// Try to read .hipleyrc.
-var settings = {}
-try {
-  settings = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.hipleyrc')))
-} catch (e) {}
-
-// Read app's babelrc and merge into our options.
-var babel = {
-  'stage': 0,
-  'optional': [
-    'runtime'
-  ],
-  'plugins': [
-    require('babel-plugin-react-transform')
-  ],
-  'extra': {
-    'react-transform': [{
-      'target': 'react-transform-webpack-hmr',
-      'imports': ['react'],
-      'locals': ['module']
-    }, {
-      'target': 'react-transform-catch-errors',
-      'imports': ['react', 'redbox-react']
-    }]
-  }
-}
-try {
-  if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
-    babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
-    babel = extend(true, {}, babel, babelrc)
-  }
-} catch (e) {}
+var SRC = path.resolve(ROOT, hipley.options.src, 'js')
+var BUILD = path.resolve(ROOT, hipley.options.dest)
 
 module.exports = function (options) {
   // Initialize conf.
@@ -51,7 +19,7 @@ module.exports = function (options) {
       app: [
         './app'
       ],
-      vendors: settings.vendors || []
+      vendors: hipley.options.vendors || []
     },
     output: {
       path: BUILD,
@@ -74,7 +42,7 @@ module.exports = function (options) {
       new webpack.NoErrorsPlugin(),
       new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js')
     ],
-    babel: babel
+    babel: hipley.babel
   }
 
   // Set root.

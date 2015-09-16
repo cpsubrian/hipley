@@ -13,12 +13,13 @@ var webpack = require('webpack')
 var webpackconf = require('./webpack.config')
 var BrowserSync = require('browser-sync')
 var browserSync
+var hipley = require('./')
 
-var ROOT = process.env.__root
-var SRC = path.resolve(ROOT, process.env.__src || 'src')
-var BUILD = path.resolve(ROOT, process.env.__dest || 'build')
-var PORT = process.env.__port || 3000
-var DEV = process.env.__dev || 3002
+var ROOT = hipley.root
+var SRC = path.resolve(ROOT, hipley.options.src)
+var BUILD = path.resolve(ROOT, hipley.options.dest)
+var PORT = hipley.options.port
+var DEV = hipley.options.devServer
 
 // Clean ./build folder.
 gulp.task('clean:build', function (cb) {

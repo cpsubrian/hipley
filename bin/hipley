@@ -5,20 +5,7 @@ var fs = require('fs')
 var path = require('path')
 var spawn = require('child_process').spawn
 var _ = require('lodash')
-
-var cwd = process.cwd()
-var options = {
-  port: 3000,
-  proxy: null,
-  cmd: null,
-  src: 'src',
-  dest: 'build',
-  browserSync: {
-    ui: 3001
-  },
-  devServer: 3002,
-  vendors: []
-}
+var hipley = require('../')
 
 program
   .version(pkg.version)
@@ -41,34 +28,16 @@ program.on('--help', function () {
     '',
     '  Configuration can be specified in a .hipleyrc file. Defaults:',
     '',
-    JSON.stringify(options, null, 2).split('\n').map(function (line) { return '    ' + line }).join('\n'),
+    JSON.stringify(hipley.defaults, null, 2).split('\n').map(function (line) { return '    ' + line }).join('\n'),
     '',
   ].join('\n'))
 })
 
 program.parse(process.argv)
 
-// Load .hipleyrc.
-var hipleyrc
-try {
-  hipleyrc = JSON.parse(fs.readFileSync(path.resolve(cwd, '.hipleyrc')))
-} catch (e) {}
-
-// Merge into options.
-if (hipleyrc) {
-  _.extend(options, hipleyrc)
-}
-
 // Helper to merge options into env.
 function getEnv (env) {
-  return _.pick(_.extend({}, process.env, {
-    __root: cwd,
-    __port: options.port,
-    __dev: options.devServer,
-    __proxy: options.proxy,
-    __src: options.src,
-    __dest: options.dest
-  }, env || {}), _.identity)
+  return _.pick(_.extend({__root: process.cwd()}, process.env, env || {}), _.identity)
 }
 
 // Helper to spawn a command.
@@ -101,8 +70,8 @@ if (program.dev) {
   runGulp('default')
 
   // Start the cmd (if needed).
-  if (options.cmd) {
-    var args = options.cmd.split(' ')
+  if (hipley.options.cmd) {
+    var args = hipley.options.cmd.split(' ')
     run({
       cmd: args.shift(),
       args: args,
@@ -110,7 +79,6 @@ if (program.dev) {
       env: getEnv()
     })
   }
-
 }
 // PRODUCTION
 else {

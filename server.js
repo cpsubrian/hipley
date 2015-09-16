@@ -7,10 +7,12 @@ var config = require('./webpack.config')({
 })
 var app = express()
 var compiler = webpack(config)
-var ROOT = process.env.__root
-var DEST = path.resolve(ROOT, process.env.__dest || 'build')
-var PORT = process.env.__dev || 3002
-var PROXY = process.env.__proxy
+var hipley = require('./')
+
+var ROOT = hipley.root
+var DEST = path.resolve(ROOT, hipley.options.dest)
+var PORT = hipley.options.devServer
+var PROXY = hipley.options.proxy
 
 // If we're not proxying, serve the dest directory.
 if (!PROXY) {
