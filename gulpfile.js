@@ -15,10 +15,10 @@ var BrowserSync = require('browser-sync')
 var browserSync
 
 var ROOT = process.env.__root
-var SRC = path.resolve(ROOT, 'src')
-var BUILD = path.resolve(ROOT, 'build')
-var BS_PORT = 3000
-var MOT_PORT = 3003
+var SRC = path.resolve(ROOT, process.env.__src || 'src')
+var BUILD = path.resolve(ROOT, process.env.__dest || 'build')
+var PORT = process.env.__port || 3000
+var DEV = process.env.__dev || 3002
 
 // Clean ./build folder.
 gulp.task('clean:build', function (cb) {
@@ -42,8 +42,8 @@ gulp.task('copy:public', function () {
 gulp.task('browser-sync', function () {
   browserSync = BrowserSync.create()
   browserSync.init({
-    port: BS_PORT,
-    proxy: 'http://localhost:' + MOT_PORT,
+    port: PORT,
+    proxy: 'http://localhost:' + DEV,
     open: false,
     notify: false,
     files: [

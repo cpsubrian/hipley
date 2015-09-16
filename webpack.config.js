@@ -4,8 +4,8 @@ var webpack = require('webpack')
 
 var ROOT = process.env.__root
 var PKG = require(path.resolve(ROOT, 'package.json'))
-var SRC = path.resolve(ROOT, 'src/js')
-var BUILD = path.resolve(ROOT, 'build')
+var SRC = path.resolve(ROOT, (process.env.__src || 'src'), 'js')
+var BUILD = path.resolve(ROOT, process.env.__dest || 'build')
 
 // Try to read .hipleyrc.
 var settings = {}
@@ -30,6 +30,7 @@ module.exports = function (options) {
       publicPath: '/'
     },
     resolve: {
+      modulesDirectories: ['node_modules', path.resolve(__dirname, 'node_modules')],
       extensions: ['', '.js', '.jsx']
     },
     resolveLoader: {

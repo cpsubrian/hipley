@@ -11,11 +11,12 @@ var options = {
   port: 3000,
   proxy: null,
   cmd: null,
-  source: 'src',
+  src: 'src',
   dest: 'build',
   browserSync: {
     ui: 3001
   },
+  devServer: 3002,
   vendors: []
 }
 
@@ -25,7 +26,7 @@ program
   .option('-p, --port [port]', 'Port to run the dev server on (3000)')
   .option('-r, --proxy [port]', 'Proxy requests to another port')
   .option('-c, --cmd [command]', 'Spawn a command, for example a node server')
-  .option('--source [dir]', 'The directory containing the source files (src/)')
+  .option('--src [dir]', 'The directory containing the source files (src/)')
   .option('--dest [dir]', 'The directory to use for the build (build/)')
 
 program.on('--help', function () {
@@ -36,7 +37,7 @@ program.on('--help', function () {
     '',
     '  Development Server:',
     '',
-    '      $ hipley --dev -p 3000 -r 3005 --cmd "motley -p 3005"',
+    '      $ hipley --dev',
     '',
     '  Configuration can be specified in a .hipleyrc file. Defaults:',
     '',
@@ -58,18 +59,60 @@ if (hipleyrc) {
   _.extend(options, hipleyrc)
 }
 
+// Helper to merge options into env.
+function getEnv (env) {
+  return _.pick(_.extend({}, process.env, {
+    __root: cwd,
+    __port: options.port,
+    __dev: options.devServer,
+    __proxy: options.proxy,
+    __src: options.src,
+    __dest: options.dest
+  }, env || {}), _.identity)
+}
+
+// Helper to spawn a command.
+function run (opts) {
+  var proc = spawn(opts.cmd, opts.args, {env: opts.env})
+  proc.stdout.pipe(process.stdout)
+  proc.stderr.pipe(process.stderr)
+}
+
+// Helper to run a gulp task.
+function runGulp (task) {
+  run({
+    cmd: path.resolve(__dirname, '../node_modules/.bin/gulp'),
+    args: [task, '--cwd', __dirname],
+    env: getEnv()
+  })
+}
+
 // DEVELOPMENT
 if (program.dev) {
-  console.log('Development')
+  // Start dev server.
+  var server = {
+    cmd: 'node',
+    args: [path.resolve(__dirname, '../server.js')],
+    env: getEnv()
+  }
+  run(server)
+
+  // Run Gulp.
+  runGulp('default')
+
+  // Start the cmd (if needed).
+  if (options.cmd) {
+    var args = options.cmd.split(' ')
+    run({
+      cmd: args.shift(),
+      args: args,
+      cwd: cwd,
+      env: getEnv()
+    })
+  }
+
 }
 // PRODUCTION
 else {
-  var gulp = {
-    cmd: path.resolve(__dirname, '../node_modules/.bin/gulp'),
-    args: ['build-prod', '--cwd', __dirname],
-    env: _.extend({}, process.env, {__root: cwd})
-  }
-  gulp.proc = spawn(gulp.cmd, gulp.args, {env: gulp.env})
-  gulp.proc.stdout.pipe(process.stdout)
-  gulp.proc.stderr.pipe(process.stderr)
+  runGulp('build-prod')
 }
