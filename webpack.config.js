@@ -1,12 +1,8 @@
-var fs = require('fs')
 var path = require('path')
 var webpack = require('webpack')
-var _ = require('lodash')
-var extend = require('extend')
 var hipley = require('./')
 
 var ROOT = hipley.root
-var PKG = require(path.resolve(ROOT, 'package.json'))
 var SRC = path.resolve(ROOT, hipley.options.src, 'js')
 var BUILD = path.resolve(ROOT, hipley.options.dest)
 
@@ -40,7 +36,10 @@ module.exports = function (options) {
     },
     plugins: [
       new webpack.NoErrorsPlugin(),
-      new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js')
+      new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js'),
+      new webpack.ProvidePlugin({
+        'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+      })
     ],
     babel: hipley.babel
   }
