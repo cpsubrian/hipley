@@ -86,7 +86,7 @@ gulp.task('watch', ['watch:less'])
 
 // General build.
 gulp.task('build', function (cb) {
-  runSequence('clean:build', ['copy:public', 'build:less'], cb)
+  runSequence('clean:build', ['build:less'], cb)
 })
 
 // Production
