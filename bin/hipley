@@ -29,7 +29,7 @@ program.on('--help', function () {
     '  Configuration can be specified in a .hipleyrc file. Defaults:',
     '',
     JSON.stringify(hipley.defaults, null, 2).split('\n').map(function (line) { return '    ' + line }).join('\n'),
-    '',
+    ''
   ].join('\n'))
 })
 

@@ -20,14 +20,16 @@ var defaults = {
 
 // Load .hipleyrc.
 var rc = {}
-try {
-  rc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.hipleyrc')))
-} catch (e) {
-  console.log('Error Parsing .hipleyrc', e)
+if (fs.existsSync(path.resolve(ROOT, '.hipleyrc'))) {
+  try {
+    rc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.hipleyrc')))
+  } catch (e) {
+    console.log('Error Parsing .hipleyrc', e)
+  }
 }
 
 // Merge .hipleyrc into options.
-var options = extend(true, {}, defaults, rc || {})
+var options = extend(true, {}, defaults, rc)
 
 // Read app's babelrc and merge into our babel options.
 var babel = {
@@ -49,13 +51,13 @@ var babel = {
     }]
   }
 }
-try {
-  if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
+if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
+  try {
     var babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
     babel = extend(true, {}, babel, babelrc)
+  } catch (e) {
+    console.log('Error parsing .babelrc', e)
   }
-} catch (e) {
-  console.log('Error parsing .babelrc', e)
 }
 
 module.exports = {
