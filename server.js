@@ -21,8 +21,8 @@ if (!PROXY) {
 
 // Catch requests for webpack resources.
 app.use(require('webpack-dev-middleware')(compiler, {
-    noInfo: true,
-    publicPath: config.output.publicPath
+  noInfo: true,
+  publicPath: config.output.publicPath
 }))
 app.use(require('webpack-hot-middleware')(compiler))
 
@@ -30,14 +30,16 @@ app.use(require('webpack-hot-middleware')(compiler))
 if (PROXY) {
   var proxy = require('http-proxy').createProxyServer()
   app.use(function (req, res) {
-    proxy.web(req, res, {target: 'http://localhost:' + PROXY})
+    proxy.web(req, res, {target: 'http://localhost:' + PROXY}, function (err) {
+      console.error(err)
+    })
   })
 }
 // Otherwise, serve all requests with an index.html in the dest directory.
 else {
-  app.get('*', function(req, res) {
-    res.sendFile(path.join(DEST, 'index.html'));
-  });
+  app.get('*', function (req, res) {
+    res.sendFile(path.join(DEST, 'index.html'))
+  })
 }
 
 // Start listening.
