@@ -4,12 +4,13 @@ var extend = require('extend')
 
 var ROOT = process.env.__root || process.cwd()
 
-var options = defaults = {
+var defaults = {
   port: 3000,
   proxy: null,
   cmd: null,
   src: 'src',
   dest: 'build',
+  static: 'public',
   browserSync: {
     ui: 3001
   },
@@ -26,9 +27,7 @@ try {
 }
 
 // Merge .hipleyrc into options.
-if (rc) {
-  options = extend(true, {}, options, rc)
-}
+var options = extend(true, {}, defaults, rc || {})
 
 // Read app's babelrc and merge into our babel options.
 var babel = {
@@ -52,7 +51,7 @@ var babel = {
 }
 try {
   if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
-    babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
+    var babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
     babel = extend(true, {}, babel, babelrc)
   }
 } catch (e) {

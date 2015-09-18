@@ -1,6 +1,4 @@
 var path = require('path')
-var spawn = require('child_process').spawn
-var _ = require('lodash')
 var rimraf = require('rimraf')
 var gulp = require('gulp')
 var gulpUtil = require('gulp-util')
@@ -26,19 +24,6 @@ gulp.task('clean:build', function (cb) {
   rimraf(BUILD, cb)
 })
 
-// Copy ./public assets.
-gulp.task('copy:public', function () {
-  var stream = gulp
-    .src(SRC + '/public/**/*')
-    .pipe(gulp.dest(BUILD))
-
-  if (browserSync) {
-    stream = stream.pipe(browserSync.stream({match: ['**/images/*']}))
-  }
-
-  return stream
-})
-
 // Initialize browserSync.
 gulp.task('browser-sync', function () {
   browserSync = BrowserSync.create()
@@ -55,7 +40,7 @@ gulp.task('browser-sync', function () {
 
 // Compile LESS stylesheets.
 gulp.task('build:less', function () {
-  var stream = gulp.src(SRC + '/styles/*.less')
+  var stream = gulp.src(SRC + '/less/*.less')
     .pipe(plumber({
       errorHandler: function (err) {
         console.error(err)
@@ -91,18 +76,13 @@ gulp.task('webpack:build', ['build'], function (cb) {
   })
 })
 
-// Watch ./public for changes.
-gulp.task('watch:public', function () {
-  gulp.watch(SRC + '/public/**/*', {interval: 2000}, ['copy:public'])
-})
-
-// Watch ./styles for changes.
-gulp.task('watch:styles', function () {
-  gulp.watch(SRC + '/styles/**/*', {interval: 300}, ['build:less'])
+// Watch ./less for changes.
+gulp.task('watch:less', function () {
+  gulp.watch(SRC + '/less/**/*', {interval: 300}, ['build:less'])
 })
 
 // Watch all the things.
-gulp.task('watch', ['watch:public', 'watch:styles'])
+gulp.task('watch', ['watch:less'])
 
 // General build.
 gulp.task('build', function (cb) {

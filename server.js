@@ -11,12 +11,14 @@ var hipley = require('./')
 
 var ROOT = hipley.root
 var DEST = path.resolve(ROOT, hipley.options.dest)
+var STATIC = path.resolve(ROOT, hipley.options.static)
 var PORT = hipley.options.devServer
 var PROXY = hipley.options.proxy
 
-// If we're not proxying, serve the dest directory.
+// If we're not proxying, serve the dest and static directories.
 if (!PROXY) {
   app.use(express.static(DEST))
+  app.use(express.static(STATIC))
 }
 
 // Catch requests for webpack resources.
@@ -26,17 +28,16 @@ app.use(require('webpack-dev-middleware')(compiler, {
 }))
 app.use(require('webpack-hot-middleware')(compiler))
 
-// Proxy requests if needed.
 if (PROXY) {
+  // Proxy requests if needed.
   var proxy = require('http-proxy').createProxyServer()
   app.use(function (req, res) {
     proxy.web(req, res, {target: 'http://localhost:' + PROXY}, function (err) {
       console.error(err)
     })
   })
-}
-// Otherwise, serve all requests with an index.html in the dest directory.
-else {
+} else {
+  // Otherwise, serve all requests with an index.html in the dest directory.
   app.get('*', function (req, res) {
     res.sendFile(path.join(DEST, 'index.html'))
   })

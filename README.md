@@ -22,6 +22,9 @@ myapp/
  ├── .hipleyrc
  ├── package.json
  ├── build/
+ ├─┬ public/
+ | ├── favicon.ico
+ │ └── index.html
  └─┬ src/
    ├─┬ js/
    │ ├── app.js
@@ -29,9 +32,7 @@ myapp/
    │ └─┬ components/
    │   ├── App.js
    │   └── Counter.js
-   ├─┬ public/
-   │ └── index.html
-   └─┬ styles/
+   └─┬ less/
      └── app.less
 ```
 
@@ -40,7 +41,7 @@ Your package.json will include any app-specific dependencies, such as `react`, `
 You can include a `.hipleyrc` file from which settings will be read (and merged into any command line arguments. For example:
 
 ```
-{ 
+{
   "cmd": "node server.js -p 8080",
   "proxy": 8080,
   "vendors": [
@@ -54,8 +55,7 @@ You can include a `.hipleyrc` file from which settings will be read (and merged 
 The `src/` directory is where hipley will create the build from. It'll be looking for a few specific things:
 
 - A `js/` subdirectory with an `app.js` entry point for the webpack build.
-- A `styles/` subdirectory with an `app.less` entry point for the less build.
-- A `public/` subdirector, the entire contents of which will be copied into your `build/` directory. This is where your index.html, images, favicon, etc. should go.
+- A `less/` subdirectory with an `app.less` entry point for the less build.
 
 
 ## CLI
@@ -75,6 +75,7 @@ $ hipley --help
     -c, --cmd [command]  Spawn a command, for example a node server
     --src [dir]          The directory containing the source files (src/)
     --dest [dir]         The directory to use for the build (build/)
+    --static [dir]       The directory to use for static resources (public/)
 
   Production Build:
 
@@ -92,6 +93,7 @@ $ hipley --help
       "cmd": null,
       "src": "src",
       "dest": "build",
+      "static": "public",
       "browserSync": {
         "ui": 3001
       },
