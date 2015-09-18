@@ -37,9 +37,9 @@ if (PROXY) {
     })
   })
 } else {
-  // Otherwise, serve all requests with an index.html in the dest directory.
+  // Otherwise, serve all requests with an index.html in the static directory.
   app.get('*', function (req, res) {
-    res.sendFile(path.join(DEST, 'index.html'))
+    res.sendFile(path.join(STATIC, 'index.html'))
   })
 }
 
