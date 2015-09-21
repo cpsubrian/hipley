@@ -42,7 +42,7 @@ var babel = {
   ],
   'extra': {
     'react-transform': [{
-      'target': 'react-transform-webpack-hmr',
+      'target': 'react-transform-hmr',
       'imports': ['react'],
       'locals': ['module']
     }, {
