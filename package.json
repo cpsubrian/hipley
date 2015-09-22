@@ -1,6 +1,6 @@
 {
   "name": "hipley",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A very specific bable/less/webpack build tool.",
   "main": "hipley.js",
   "bin": {
