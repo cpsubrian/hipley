@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var program = require('commander')
 var pkg = require('../package.json')
+var fs = require('fs')
 var path = require('path')
 var spawn = require('child_process').spawn
 var _ = require('lodash')
@@ -44,7 +45,6 @@ program.parse(process.argv)
 var keys = ['port', 'proxy', 'cmd', 'src', 'dest']
 keys.forEach(function (key) {
   if (program[key]) {
-    console.log(key, program[key])
     hipley.set(key, program[key])
   }
 })
@@ -59,19 +59,22 @@ function getEnv (env) {
 }
 
 // Helper to spawn a command.
-function run (opts) {
+function run (opts, cb) {
   var proc = spawn(opts.cmd, opts.args, {env: opts.env})
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
+  if (cb) {
+    proc.on('exit', cb)
+  }
 }
 
 // Helper to run a gulp task.
-function runGulp (task, env) {
+function runGulp (task, env, cb) {
   run({
     cmd: path.resolve(__dirname, '../node_modules/.bin/gulp'),
     args: [task, '--cwd', __dirname],
     env: getEnv(env)
-  })
+  }, cb)
 }
 
 if (program.dev) {
@@ -96,11 +99,21 @@ if (program.dev) {
     })
   }
 } else if (program.serve) {
-  run({
-    cmd: 'node',
-    args: [path.resolve(__dirname, '../server.js')],
-    env: getEnv({NODE_ENV: 'production'})
-  })
+  if (!fs.existsSync(path.resolve(hipley.root, hipley.options.dest, 'js/app.js'))) {
+    runGulp('build-prod', {NODE_ENV: 'production'}, function () {
+      run({
+        cmd: 'node',
+        args: [path.resolve(__dirname, '../server.js')],
+        env: getEnv({NODE_ENV: 'production'})
+      })
+    })
+  } else {
+    run({
+      cmd: 'node',
+      args: [path.resolve(__dirname, '../server.js')],
+      env: getEnv({NODE_ENV: 'production'})
+    })
+  }
 } else {
   // PRODUCTION BUILD
   runGulp('build-prod', {NODE_ENV: 'production'})
