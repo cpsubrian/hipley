@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var program = require('commander')
 var pkg = require('../package.json')
-var fs = require('fs')
 var path = require('path')
 var spawn = require('child_process').spawn
 var _ = require('lodash')
@@ -41,9 +40,22 @@ program.on('--help', function () {
 
 program.parse(process.argv)
 
+// Set options from arguments.
+var keys = ['port', 'proxy', 'cmd', 'src', 'dest']
+keys.forEach(function (key) {
+  if (program[key]) {
+    console.log(key, program[key])
+    hipley.set(key, program[key])
+  }
+})
+
 // Helper to merge options into env.
 function getEnv (env) {
-  return _.pick(_.extend({__root: hipley.root}, process.env, env || {}), _.identity)
+  var optionEnv = {__root: hipley.root}
+  Object.keys(hipley.options).forEach(function (key) {
+    optionEnv['__' + key] = hipley.options[key]
+  })
+  return _.pick(_.extend(optionEnv, process.env, env || {}), _.identity)
 }
 
 // Helper to spawn a command.

@@ -5,16 +5,16 @@ var extend = require('extend')
 var ROOT = process.env.__root || process.cwd()
 
 var defaults = {
-  port: 3000,
-  proxy: null,
-  cmd: null,
-  src: 'src',
-  dest: 'build',
-  static: 'public',
+  port: process.env.PORT || process.env.__port || 3000,
+  proxy: process.env.__proxy || null,
+  cmd: process.env.__cmd || null,
+  src: process.env.__src || 'src',
+  dest: process.env.__dset || 'build',
+  static: process.env.__static || 'public',
+  devServer: process.env.__devServer || 3002,
   browserSync: {
     ui: 3001
   },
-  devServer: 3002,
   vendors: []
 }
 
@@ -69,5 +69,8 @@ module.exports = {
   defaults: defaults,
   rc: rc,
   babel: babel,
-  options: options
+  options: options,
+  set: function (key, val) {
+    options[key] = val
+  }
 }
