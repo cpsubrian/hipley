@@ -99,10 +99,10 @@ $ hipley --help
       "src": "src",
       "dest": "build",
       "static": "public",
+      "devServer": 3002,
       "browserSync": {
         "ui": 3001
       },
-      "devServer": 3002,
       "vendors": []
     }
 ```

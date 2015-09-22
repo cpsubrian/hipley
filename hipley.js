@@ -5,11 +5,11 @@ var extend = require('extend')
 var ROOT = process.env.__root || process.cwd()
 
 var defaults = {
-  port: process.env.PORT || process.env.__port || 3000,
+  port: process.env.__port || process.env.PORT || 3000,
   proxy: process.env.__proxy || null,
   cmd: process.env.__cmd || null,
   src: process.env.__src || 'src',
-  dest: process.env.__dset || 'build',
+  dest: process.env.__dest || 'build',
   static: process.env.__static || 'public',
   devServer: process.env.__devServer || 3002,
   browserSync: {
