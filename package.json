@@ -27,6 +27,7 @@
     "babel-runtime": "^5.8.24",
     "browser-sync": "^2.7.13",
     "commander": "^2.8.1",
+    "compression": "^1.5.2",
     "exports-loader": "^0.6.2",
     "express": "^4.13.3",
     "extend": "^3.0.0",

@@ -9,7 +9,9 @@ var hipley = require('../')
 
 program
   .version(pkg.version)
-  .option('-d, --dev', 'Run a development server, rather than build')
+  .option('-d, --dev', 'Run a development server')
+  .option('-b, --build', 'Build the production bundles')
+  .option('-s, --serve', 'Run a production server')
   .option('-p, --port [port]', 'Port to run the dev server on (3000)')
   .option('-r, --proxy [port]', 'Proxy requests to another port')
   .option('-c, --cmd [command]', 'Spawn a command, for example a node server')
@@ -18,13 +20,17 @@ program
 
 program.on('--help', function () {
   console.log([
-    '  Production Build:',
-    '',
-    '      $ hipley',
-    '',
     '  Development Server:',
     '',
     '      $ hipley --dev',
+    '',
+    '  Production Build:',
+    '',
+    '      $ hipley --build',
+    '',
+    '  Production Server:',
+    '',
+    '      $ hipley --serve',
     '',
     '  Configuration can be specified in a .hipleyrc file. Defaults:',
     '',
@@ -48,26 +54,24 @@ function run (opts) {
 }
 
 // Helper to run a gulp task.
-function runGulp (task) {
+function runGulp (task, env) {
   run({
     cmd: path.resolve(__dirname, '../node_modules/.bin/gulp'),
     args: [task, '--cwd', __dirname],
-    env: getEnv()
+    env: getEnv(env)
   })
 }
 
-// DEVELOPMENT
 if (program.dev) {
-  // Start dev server.
-  var server = {
+  // Start development server.
+  run({
     cmd: 'node',
-    args: [path.resolve(__dirname, '../server.js')],
-    env: getEnv()
-  }
-  run(server)
+    args: [path.resolve(__dirname, '../devServer.js')],
+    env: getEnv({NODE_ENV: 'development'})
+  })
 
   // Run Gulp.
-  runGulp('default')
+  runGulp('default', {NODE_ENV: 'development'})
 
   // Start the cmd (if needed).
   if (hipley.options.cmd) {
@@ -76,11 +80,16 @@ if (program.dev) {
       cmd: args.shift(),
       args: args,
       cwd: hipley.root,
-      env: getEnv()
+      env: getEnv({NODE_ENV: 'development'})
     })
   }
-}
-// PRODUCTION
-else {
-  runGulp('build-prod')
+} else if (program.serve) {
+  run({
+    cmd: 'node',
+    args: [path.resolve(__dirname, '../server.js')],
+    env: getEnv({NODE_ENV: 'production'})
+  })
+} else {
+  // PRODUCTION BUILD
+  runGulp('build-prod', {NODE_ENV: 'production'})
 }

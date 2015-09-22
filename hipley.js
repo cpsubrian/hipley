@@ -36,20 +36,24 @@ var babel = {
   'stage': 0,
   'optional': [
     'runtime'
-  ],
-  'plugins': [
-    require('babel-plugin-react-transform')
-  ],
-  'extra': {
-    'react-transform': [{
-      'target': 'react-transform-hmr',
-      'imports': ['react'],
-      'locals': ['module']
-    }, {
-      'target': 'react-transform-catch-errors',
-      'imports': ['react', 'redbox-react']
-    }]
-  }
+  ]
+}
+if (process.env.NODE_ENV === 'development') {
+  babel = extend(true, {}, babel, {
+    'plugins': [
+      require('babel-plugin-react-transform')
+    ],
+    'extra': {
+      'react-transform': [{
+        'target': 'react-transform-hmr',
+        'imports': ['react'],
+        'locals': ['module']
+      }, {
+        'target': 'react-transform-catch-errors',
+        'imports': ['react', 'redbox-react']
+      }]
+    }
+  })
 }
 if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
   try {

@@ -69,21 +69,26 @@ $ hipley --help
 
     -h, --help           output usage information
     -V, --version        output the version number
-    -d, --dev            Run a development server, rather than build
+    -d, --dev            Run a development server
+    -b, --build          Build the production bundles
+    -s, --serve          Run a production server
     -p, --port [port]    Port to run the dev server on (3000)
     -r, --proxy [port]   Proxy requests to another port
     -c, --cmd [command]  Spawn a command, for example a node server
     --src [dir]          The directory containing the source files (src/)
     --dest [dir]         The directory to use for the build (build/)
-    --static [dir]       The directory to use for static resources (public/)
-
-  Production Build:
-
-      $ hipley
 
   Development Server:
 
       $ hipley --dev
+
+  Production Build:
+
+      $ hipley --build
+
+  Production Server:
+
+      $ hipley --serve
 
   Configuration can be specified in a .hipleyrc file. Defaults:
 
@@ -102,11 +107,10 @@ $ hipley --help
     }
 ```
 
-Note: Most options pertain only to development mode `--dev`. When building the production copy hipley just builds all the javascript, css, and copies the public files over to build. You'll then host that however you see fit.
+Note: Most options pertain to the development or serve modes.
 
 ### CLI Options
 
-- `-d, --dev`: Run hipley in development mode.
 - `-p, --port`: The port that the primary develpment server (BrowserSync) will run on. This is what you point your browser at.
 - `-r, --proxy`: (Optional) A port that the development server should ultimately proxy to. For example, an express server hosting your server-side code.
 - `-c, --cmd`: (Optional) A shell command to run before starting the development build. For example, start up your express server `node server.js`.
