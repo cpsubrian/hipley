@@ -17,7 +17,7 @@ app.get('*', function (req, res) {
   res.sendFile(path.join(STATIC, 'index.html'))
 })
 
-app.listen(PORT, 'localhost', function (err) {
+app.listen(PORT, function (err) {
   if (err) throw err
   console.log('Server listening at http://localhost:' + PORT)
 })
