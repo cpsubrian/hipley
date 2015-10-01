@@ -64,6 +64,35 @@ The `src/` directory is where hipley will create the build from. It'll be lookin
 - A `js/` subdirectory with an `app.js` entry point for the webpack build.
 - A `less/` subdirectory with an `app.less` entry point for the less build.
 
+## Run the Development Server
+
+With one command you can run a development server that watches your javascript
+and styles for changes and applies hot-reloading to any changes.
+
+```
+$ hipley --dev
+```
+
+## Build for Production
+
+Hipley includes a production build mode that properly sets `NODE_ENV`, minifies
+scripts, and builds source maps.
+
+```
+$ hipley --build
+```
+
+Your built files will be found in `./build/`. You can run a simple 'production'
+server that loads these files with:
+
+```
+$ hipley --serve
+```
+
+This can be useful for deploying to services like Heroku. This server is a simple
+express server that hosts the `public/` and `build/` directories and rewrites
+ALL urls to `public/index.html`.
+
 
 ## CLI
 
