@@ -15,7 +15,14 @@ $ npm install -g hipley
 
 ## Application Setup
 
-Your app directory should look something like this:
+Hipley comes with a utility to quickly set up a new simple React application.
+Navigate to a new directory where you'd like your app to be set up and run:
+
+```
+$ hipley --init
+```
+
+Your directory should now look something like this:
 
 ```
 myapp/
@@ -77,6 +84,7 @@ $ hipley --help
     -c, --cmd [command]  Spawn a command, for example a node server
     --src [dir]          The directory containing the source files (src/)
     --dest [dir]         The directory to use for the build (build/)
+    --init               Initialize a new React application
 
   Development Server:
 

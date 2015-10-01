@@ -5,6 +5,8 @@ var fs = require('fs')
 var path = require('path')
 var spawn = require('child_process').spawn
 var _ = require('lodash')
+var init = require('init-package-json')
+var ncp = require('ncp')
 var hipley = require('../')
 
 program
@@ -17,6 +19,7 @@ program
   .option('-c, --cmd [command]', 'Spawn a command, for example a node server')
   .option('--src [dir]', 'The directory containing the source files (src/)')
   .option('--dest [dir]', 'The directory to use for the build (build/)')
+  .option('--init', 'Initialize a new React project in the current directory')
 
 program.on('--help', function () {
   console.log([
@@ -114,7 +117,22 @@ if (program.dev) {
       env: getEnv({NODE_ENV: 'production'})
     })
   }
-} else {
+} else if (program.build) {
   // PRODUCTION BUILD
   runGulp('build-prod', {NODE_ENV: 'production'})
+} else if (program.init) {
+  // INIT
+  var initFile = path.resolve(process.env.HOME, '.npm-init')
+  var configData = {}
+  var exampleDir = path.resolve(__dirname, '../example')
+  var examplePkg = JSON.parse(fs.readFileSync(path.join(exampleDir, 'package.json')))
+  init(hipley.root, initFile, configData, function (err, data) {
+    if (err) throw err
+    data.dependencies = examplePkg.dependencies
+    fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(data, null, 2))
+    ncp(exampleDir, hipley.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
+      if (err) throw err
+      run({cmd: 'npm', args: ['install'], env: getEnv()})
+    })
+  })
 }
