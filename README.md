@@ -167,7 +167,7 @@ is directly tied to the examples and easily allows you to spin up a copy of one 
 execute `hipley --init [name of example]` and you'll get an installed clone of the example,
 ready to be modified.
 
-```
+```bash
 # Spin up the basic example:
 $ hipley --init
 # or...
