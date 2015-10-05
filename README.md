@@ -160,6 +160,23 @@ Hipley build two bundles: `app.js` and `vendors.js`. Vendors will only contain l
 
 Hot reload is powered by the methodology shown in https://github.com/gaearon/react-transform-boilerplate. It uses babel react-transforms and middleware inside the dev server.
 
+## Examples and `hipley --init`
+
+The `./examples` directory contains examples of various react applications. The `--init` command
+is directly tied to the examples and easily allows you to spin up a copy of one of them. Simply
+execute `hipley --init [name of example]` and you'll get an installed clone of the example,
+ready to be modified.
+
+```
+# Spin up the basic example:
+$ hipley --init
+# or...
+$ hipley --init basic
+
+# Spin up a redux app:
+$ hipley --init redux
+```
+
 - - -
 
 #### Developed by [TerraEclipse](https://github.com/TerraEclipse)
