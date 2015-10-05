@@ -80,8 +80,8 @@ function runGulp (task, env, cb) {
   }, cb)
 }
 
+// Start development server.
 if (program.dev) {
-  // Start development server.
   run({
     cmd: 'node',
     args: [path.resolve(__dirname, '../devServer.js')],
@@ -101,6 +101,8 @@ if (program.dev) {
       env: getEnv({NODE_ENV: 'development'})
     })
   }
+
+// SERVE PRODUCTION BUILD
 } else if (program.serve) {
   if (!fs.existsSync(path.resolve(hipley.root, hipley.options.dest, 'js/app.js'))) {
     runGulp('build-prod', {NODE_ENV: 'production'}, function () {
@@ -117,22 +119,29 @@ if (program.dev) {
       env: getEnv({NODE_ENV: 'production'})
     })
   }
+
+// PRODUCTION BUILD
 } else if (program.build) {
-  // PRODUCTION BUILD
   runGulp('build-prod', {NODE_ENV: 'production'})
+
+// INIT
 } else if (program.init) {
-  // INIT
+  var name = program.args[0] || 'basic'
   var initFile = path.resolve(process.env.HOME, '.npm-init')
   var configData = {}
-  var exampleDir = path.resolve(__dirname, '../example')
-  var examplePkg = JSON.parse(fs.readFileSync(path.join(exampleDir, 'package.json')))
-  init(hipley.root, initFile, configData, function (err, data) {
-    if (err) throw err
-    data.dependencies = examplePkg.dependencies
-    fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(data, null, 2))
-    ncp(exampleDir, hipley.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
+  var exampleDir = path.resolve(__dirname, '../examples/' + name)
+  if (fs.existsSync(exampleDir)) {
+    var examplePkg = JSON.parse(fs.readFileSync(path.join(exampleDir, 'package.json')))
+    init(hipley.root, initFile, configData, function (err, data) {
       if (err) throw err
-      run({cmd: 'npm', args: ['install'], env: getEnv()})
+      data.dependencies = examplePkg.dependencies
+      fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(data, null, 2))
+      ncp(exampleDir, hipley.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
+        if (err) throw err
+        run({cmd: 'npm', args: ['install'], env: getEnv()})
+      })
     })
-  })
+  } else {
+    throw new Error('Sorry, could not find a recipe for "' + name + '"')
+  }
 }
