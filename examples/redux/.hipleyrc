@@ -1,5 +1,8 @@
 {
   "vendors": [
-    "react"
+    "autobind-decorator",
+    "redux",
+    "react",
+    "react-redux"
   ]
 }
