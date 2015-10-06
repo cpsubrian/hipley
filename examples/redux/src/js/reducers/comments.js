@@ -19,19 +19,15 @@ const initialState = [
 const reducers = {
 
   [COMMENTS_ADD]: (state, {comment}) => {
-    if (comment.name.length && comment.message.length) {
-      return state.concat(comment)
-    } else {
-      return state
-    }
+    return state.concat(comment)
   },
 
   [COMMENTS_LIKE]: (state, {index}) => {
-    return [].concat(
-      state.slice(0, index),
-      [{...state[index], likes: state[index].likes + 1}],
-      state.slice(index + 1)
-    )
+    return [
+      ...state.slice(0, index),
+      {...state[index], likes: state[index].likes + 1},
+      ...state.slice(index + 1)
+    ]
   }
 }
 

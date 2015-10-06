@@ -23,8 +23,12 @@ class CommentForm extends React.Component {
 
   onSubmit (e) {
     e.preventDefault()
-    this.props.addComment({name: this.state.name, message: this.state.message})
-    this.setState({name: '', message: ''})
+    if (this.state.name.length && this.state.message.length) {
+      this.props.addComment({name: this.state.name, message: this.state.message})
+      this.setState({name: '', message: ''})
+    } else {
+      window.alert('Name and Message are required')
+    }
   }
 
   render () {
