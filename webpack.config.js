@@ -23,7 +23,8 @@ module.exports = function (options) {
       publicPath: '/'
     },
     resolve: {
-      root: [ROOT, path.resolve(__dirname, 'node_modules')],
+      root: ROOT,
+      fallback: path.resolve(__dirname, 'node_modules'),
       extensions: ['', '.js', '.jsx']
     },
     resolveLoader: {
