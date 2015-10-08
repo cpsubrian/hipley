@@ -42,7 +42,6 @@
     "init-package-json": "^1.9.1",
     "lodash": "^3.10.1",
     "ncp": "^2.0.0",
-    "react": ">=0.13.x",
     "react-transform-catch-errors": "^0.1.2",
     "react-transform-hmr": "^1.0.0",
     "redbox-react": "^1.0.4",
