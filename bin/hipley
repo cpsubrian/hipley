@@ -69,11 +69,12 @@ function run (opts, cb) {
   if (cb) {
     proc.on('exit', cb)
   }
+  return proc
 }
 
 // Helper to run a gulp task.
 function runGulp (task, env, cb) {
-  run({
+  return run({
     cmd: path.resolve(__dirname, '../node_modules/.bin/gulp'),
     args: [task, '--cwd', __dirname],
     env: getEnv(env)
@@ -89,16 +90,20 @@ if (program.dev) {
   })
 
   // Run Gulp.
-  runGulp('default', {NODE_ENV: 'development'})
+  var proc = runGulp('default', {NODE_ENV: 'development'})
 
   // Start the cmd (if needed).
   if (hipley.options.cmd) {
-    var args = hipley.options.cmd.split(' ')
-    run({
-      cmd: args.shift(),
-      args: args,
-      cwd: hipley.root,
-      env: getEnv({NODE_ENV: 'development'})
+    proc.stdout.on('data', function (chunk) {
+      if (chunk.toString().match(/Finished \'default\'/)) {
+        var args = hipley.options.cmd.split(' ')
+        run({
+          cmd: args.shift(),
+          args: args,
+          cwd: hipley.root,
+          env: getEnv({NODE_ENV: 'development'})
+        })
+      }
     })
   }
 
