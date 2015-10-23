@@ -27,4 +27,4 @@ build/Release
 node_modules
 
 # Example build directory
-example/build
+examples/*/build

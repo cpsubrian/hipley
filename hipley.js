@@ -54,6 +54,12 @@ var babel = {
           }]
         }
       }
+    },
+    'production': {
+      'optional': [
+        'optimisation.react.inlineElements',
+        'optimisation.react.constantElements'
+      ]
     }
   }
 }

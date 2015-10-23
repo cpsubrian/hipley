@@ -3,6 +3,7 @@
     "autobind-decorator",
     "redux",
     "react",
+    "react-dom",
     "react-redux"
   ]
 }
