@@ -31,38 +31,42 @@ if (fs.existsSync(path.resolve(ROOT, '.hipleyrc'))) {
 // Merge .hipleyrc into options.
 var options = extend(true, {}, defaults, rc)
 
-// Read app's babelrc and merge into our babel options.
+// Base babel options.
 var babel = {
-  'stage': 0,
-  'optional': [
-    'runtime'
+  presets: [
+    require.resolve('babel-preset-es2015'),
+    require.resolve('babel-preset-react'),
+    require.resolve('babel-preset-stage-0')
   ],
-  'env': {
-    'development': {
-      'plugins': [
-        require('babel-plugin-react-transform')
-      ],
-      'extra': {
-        'react-transform': {
+  env: {
+    development: {
+      plugins: [
+        [require.resolve('babel-plugin-transform-decorators-legacy')],
+        [require.resolve('babel-plugin-react-transform'), {
           'transforms': [{
-            'transform': 'react-transform-hmr',
+            'transform': require.resolve('react-transform-hmr'),
             'imports': ['react'],
             'locals': ['module']
           }, {
-            'transform': 'react-transform-catch-errors',
+            'transform': require.resolve('react-transform-catch-errors'),
             'imports': ['react', 'redbox-react']
           }]
-        }
-      }
+        }],
+        [require.resolve('babel-plugin-transform-runtime')]
+      ]
     },
-    'production': {
-      'optional': [
-        'optimisation.react.inlineElements',
-        'optimisation.react.constantElements'
+    production: {
+      plugins: [
+        [require.resolve('babel-plugin-transform-decorators-legacy')],
+        [require.resolve('babel-plugin-transform-react-constant-elements')],
+        [require.resolve('babel-plugin-transform-react-inline-elements')],
+        [require.resolve('babel-plugin-transform-runtime')]
       ]
     }
   }
 }
+
+// Read app's babelrc and merge into base babel options.
 if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
   try {
     var babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
