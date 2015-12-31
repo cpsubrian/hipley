@@ -1,5 +1,7 @@
 var path = require('path')
 var rimraf = require('rimraf')
+var ncp = require('ncp')
+var async = require('async')
 var gulp = require('gulp')
 var gulpUtil = require('gulp-util')
 var less = require('gulp-less')
@@ -18,6 +20,7 @@ var SRC = path.resolve(ROOT, hipley.options.src)
 var BUILD = path.resolve(ROOT, hipley.options.dest)
 var PORT = hipley.options.port
 var DEV = hipley.options.devServer
+var copy = hipley.options.copy
 
 // Clean ./build folder.
 gulp.task('clean:build', function (cb) {
@@ -36,6 +39,17 @@ gulp.task('browser-sync', function () {
       BUILD + '/**/*.html'
     ]
   })
+})
+
+// Copy folders/files.
+gulp.task('build:copy', function (cb) {
+  if (copy) {
+    async.each(copy, function (source, next) {
+      ncp(path.resolve(ROOT, source), BUILD, next)
+    }, cb)
+  } else {
+    cb()
+  }
 })
 
 // Compile LESS stylesheets.
@@ -86,7 +100,7 @@ gulp.task('watch', ['watch:less'])
 
 // General build.
 gulp.task('build', function (cb) {
-  runSequence('clean:build', ['build:less'], cb)
+  runSequence('clean:build', ['build:less', 'build:copy'], cb)
 })
 
 // Production

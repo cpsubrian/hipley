@@ -140,7 +140,8 @@ $ hipley --help
       "browserSync": {
         "ui": 3001
       },
-      "vendors": []
+      "vendors": [],
+      "copy": []
     }
 ```
 
