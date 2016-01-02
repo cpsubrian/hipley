@@ -139,8 +139,8 @@ if (program.dev) {
     var examplePkg = JSON.parse(fs.readFileSync(path.join(exampleDir, 'package.json')))
     init(hipley.root, initFile, configData, function (err, data) {
       if (err) throw err
-      data.dependencies = examplePkg.dependencies
-      fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(data, null, 2))
+      var newPkg = _.extend({}, examplePkg, data)
+      fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(newPkg, null, 2))
       ncp(exampleDir, hipley.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
         if (err) throw err
         run({cmd: 'npm', args: ['install'], env: getEnv()})
