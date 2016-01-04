@@ -1,6 +1,7 @@
 {
   "vendors": [
     "autobind-decorator",
+    "lodash",
     "redux",
     "react",
     "react-dom",
