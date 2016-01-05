@@ -1,22 +1,22 @@
-Example App
------------
+Example App - Redux
+===================
 
 This is a simple react app that you can test hipley and hot-reloading with.
 
 Run Development Server
-======================
+----------------------
 
 ```
 $ hipley --dev
 ```
 
 Now if you visit [http://localhost:3000](http://localhost:3000) you should see
-some counters. If you edit `colors.js` or `Counter.js`, you should see the
-changes live-update. You can also edit `app.less` and see those changes
+some a simple chat UI. If you edit any components, you should see the
+changes live-update. You can also edit `src/less/app.less` and see those changes
 auto-inject also.
 
 Build for Production
-====================
+--------------------
 
 ```
 $ hipley --build

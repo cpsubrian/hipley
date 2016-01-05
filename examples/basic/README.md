@@ -1,10 +1,10 @@
-Example App
------------
+Example App - Basic
+===================
 
 This is a simple react app that you can test hipley and hot-reloading with.
 
 Run Development Server
-======================
+----------------------
 
 ```
 $ hipley --dev
@@ -16,7 +16,7 @@ changes live-update. You can also edit `app.less` and see those changes
 auto-inject also.
 
 Build for Production
-====================
+--------------------
 
 ```
 $ hipley --build
