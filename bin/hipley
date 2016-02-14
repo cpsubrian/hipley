@@ -58,7 +58,7 @@ function getEnv (env) {
   Object.keys(hipley.options).forEach(function (key) {
     optionEnv['__' + key] = hipley.options[key]
   })
-  return _.pick(_.extend(optionEnv, process.env, env || {}), _.identity)
+  return _.pickBy(_.extend(optionEnv, process.env, env || {}), _.identity)
 }
 
 // Helper to spawn a command.
