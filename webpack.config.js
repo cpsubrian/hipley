@@ -1,3 +1,4 @@
+var _ = require('lodash')
 var path = require('path')
 var webpack = require('webpack')
 var hipley = require('./')
@@ -35,7 +36,11 @@ module.exports = function (options) {
     },
     module: {
       loaders: [
-        { test: /\.js?$/, loader: 'babel', include: SRC }
+        {
+          test: /\.js?$/,
+          loader: 'babel',
+          include: SRC
+        }
       ]
     },
     plugins: [
@@ -54,7 +59,7 @@ module.exports = function (options) {
         minChunks: 3
       })
     ],
-    babel: hipley.babel
+    babel: _.extend({cacheDirectory: true}, hipley.babel)
   }
 
   // Optionally, support vendors splitting.

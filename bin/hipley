@@ -20,6 +20,7 @@ program
   .option('--src [dir]', 'The directory containing the source files (src/)')
   .option('--dest [dir]', 'The directory to use for the build (build/)')
   .option('--init', 'Initialize a new React project in the current directory')
+  .option('--babel-register', 'Output options for babel-register as JSON')
 
 program.on('--help', function () {
   console.log([
@@ -149,4 +150,12 @@ if (program.dev) {
   } else {
     throw new Error('Sorry, could not find a recipe for "' + name + '"')
   }
+
+// Generate babel-register options.
+} else if (program.babelRegister) {
+  var output = _.merge({},
+    _.omit(hipley.babel, 'env'),
+    hipley.babel.env.production
+  )
+  console.log(JSON.stringify(output, null, 2))
 }

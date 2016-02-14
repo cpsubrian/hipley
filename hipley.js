@@ -41,6 +41,7 @@ var babel = {
   env: {
     development: {
       plugins: [
+        [require.resolve('babel-plugin-transform-runtime')],
         [require.resolve('babel-plugin-transform-decorators-legacy')],
         [require.resolve('babel-plugin-react-transform'), {
           'transforms': [{
@@ -51,16 +52,15 @@ var babel = {
             'transform': require.resolve('react-transform-catch-errors'),
             'imports': ['react', 'redbox-react']
           }]
-        }],
-        [require.resolve('babel-plugin-transform-runtime')]
+        }]
       ]
     },
     production: {
       plugins: [
+        [require.resolve('babel-plugin-transform-runtime')],
         [require.resolve('babel-plugin-transform-decorators-legacy')],
         [require.resolve('babel-plugin-transform-react-constant-elements')],
-        [require.resolve('babel-plugin-transform-react-inline-elements')],
-        [require.resolve('babel-plugin-transform-runtime')]
+        [require.resolve('babel-plugin-transform-react-inline-elements')]
       ]
     }
   }
