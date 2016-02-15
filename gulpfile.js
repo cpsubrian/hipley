@@ -1,4 +1,5 @@
 var path = require('path')
+var fs = require('fs')
 var rimraf = require('rimraf')
 var ncp = require('ncp')
 var async = require('async')
@@ -18,6 +19,7 @@ var hipley = require('./')
 var ROOT = hipley.root
 var SRC = path.resolve(ROOT, hipley.options.src)
 var BUILD = path.resolve(ROOT, hipley.options.dest)
+var STATS = path.join(BUILD, 'webpack-stats.json')
 var PORT = hipley.options.port
 var DEV = hipley.options.devServer
 var copy = hipley.options.copy
@@ -86,6 +88,8 @@ gulp.task('webpack:build', ['build'], function (cb) {
     gulpUtil.log('[webpack:build]', stats.toString({
       colors: true
     }))
+    gulpUtil.log('[webpack:build] Writing stats to `' + STATS + '`')
+    fs.writeFileSync(STATS, JSON.stringify(stats.toJson(), null, 2))
     cb()
   })
 })
