@@ -39,7 +39,9 @@ module.exports = function (options) {
       new webpack.NoErrorsPlugin(),
       new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js'),
       new webpack.ProvidePlugin({
-        'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+        'Promise': 'exports?global.Promise!es6-promise',
+        'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
+        'window.fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
       })
     ],
     babel: hipley.babel

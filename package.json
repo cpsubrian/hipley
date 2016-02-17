@@ -29,6 +29,7 @@
     "browser-sync": "^2.9.11",
     "commander": "^2.8.1",
     "compression": "^1.6.0",
+    "es6-promise": "^3.1.2",
     "exports-loader": "^0.6.2",
     "express": "^4.13.3",
     "extend": "^3.0.0",
