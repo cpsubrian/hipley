@@ -39,7 +39,8 @@ gulp.task('browser-sync', function () {
     notify: false,
     files: [
       BUILD + '/**/*.html'
-    ]
+    ],
+    ghostMode: false
   })
 })
 
