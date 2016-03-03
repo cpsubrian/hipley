@@ -1,4 +1,7 @@
 {
+  "optional": {
+    "react-transform-catch-errors": false
+  },
   "vendors": [
     "autobind-decorator",
     "lodash",

@@ -16,7 +16,10 @@ var defaults = {
   browserSync: {
     ui: 3001
   },
-  vendors: []
+  vendors: [],
+  optional: {
+    'react-transform-catch-errors': true
+  }
 }
 
 // Load .hipleyrc.
@@ -45,14 +48,16 @@ var babel = {
         [require.resolve('babel-plugin-transform-runtime')],
         [require.resolve('babel-plugin-transform-decorators-legacy')],
         [require.resolve('babel-plugin-react-transform'), {
-          'transforms': [{
-            'transform': require.resolve('react-transform-hmr'),
-            'imports': ['react'],
-            'locals': ['module']
-          }, {
-            'transform': require.resolve('react-transform-catch-errors'),
-            'imports': ['react', 'redbox-react']
-          }]
+          'transforms': _.compact([
+            {
+              'transform': require.resolve('react-transform-hmr'),
+              'imports': ['react'],
+              'locals': ['module']
+            }, (options.optional['react-transform-catch-errors'] && {
+              'transform': require.resolve('react-transform-catch-errors'),
+              'imports': ['react', 'redbox-react']
+            })
+          ])
         }]
       ]
     },
