@@ -11,9 +11,9 @@ module.exports = function (options) {
   // Initialize conf.
   var conf = {
     cache: true,
+    devtool: 'sourcemap',
     context: SRC,
     root: SRC,
-    devtool: 'sourcemap',
     entry: {
       app: ['./app']
     },
