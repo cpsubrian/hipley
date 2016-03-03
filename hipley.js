@@ -1,6 +1,7 @@
 var fs = require('fs')
 var path = require('path')
 var extend = require('extend')
+var _ = require('lodash')
 
 var ROOT = process.env.__root || process.cwd()
 
