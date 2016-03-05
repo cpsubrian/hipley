@@ -13,6 +13,16 @@ Hipley is a CLI so just install it globally from npm.
 $ npm install -g hipley
 ```
 
+## TLDR; Quick Usage
+
+```
+$ hipley --init
+$ hipley --dev
+(open http://localhost:3000 in browser)
+(edit a file, such as a component)
+(watch it hot reload)
+```
+
 ## Application Setup
 
 Hipley comes with a utility to quickly set up a new simple React application.
