@@ -11,16 +11,16 @@ module.exports = function (options) {
   var conf = {
     cache: true,
     context: SRC,
+    root: SRC,
+    devtool: 'sourcemap',
     entry: {
-      app: [
-        './app'
-      ],
-      vendors: hipley.options.vendors || []
+      app: ['./app']
     },
     output: {
       path: BUILD,
-      filename: 'js/app.js',
-      publicPath: '/'
+      publicPath: '/',
+      filename: 'js/[name].js',
+      chunkFilename: 'js/[id].chunk.js'
     },
     resolve: {
       root: ROOT,
@@ -37,21 +37,35 @@ module.exports = function (options) {
     },
     plugins: [
       new webpack.NoErrorsPlugin(),
-      new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js'),
+      // Browser shims.
       new webpack.ProvidePlugin({
         'Promise': 'exports?global.Promise!es6-promise',
         'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
         'window.fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+      }),
+      // If using code splitting, dedupe commons in child chunks.
+      new webpack.optimize.CommonsChunkPlugin({
+        names: ['app'],
+        children: true,
+        async: true,
+        minChunks: 3
       })
     ],
     babel: hipley.babel
   }
 
-  // Set root.
-  conf.root = SRC
+  // Optionally, support vendors splitting.
+  if (hipley.options.vendors && hipley.options.vendors.length) {
+    conf.entry.vendors = hipley.options.vendors
+    conf.plugins = conf.plugins.concat([
+      new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js')
+    ])
+  }
 
-  // Enable sourcemaps.
-  conf.devtool = 'sourcemap'
+  // Optionally, support externals.
+  if (hipley.options.externals) {
+    conf.externals = hipley.options.externals
+  }
 
   // Production.
   if (options.production) {
