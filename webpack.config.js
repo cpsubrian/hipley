@@ -25,7 +25,10 @@ module.exports = function (options) {
     resolve: {
       root: ROOT,
       fallback: path.resolve(__dirname, 'node_modules'),
-      extensions: ['', '.js', '.jsx']
+      extensions: ['', '.js', '.jsx'],
+      alias: {
+        '@app': SRC
+      }
     },
     resolveLoader: {
       root: path.resolve(__dirname, 'node_modules')
