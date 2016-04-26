@@ -11,7 +11,7 @@ module.exports = function (options) {
   // Initialize conf.
   var conf = {
     cache: true,
-    devtool: 'sourcemap',
+    devtool: 'source-map',
     context: SRC,
     root: SRC,
     entry: {
@@ -24,22 +24,26 @@ module.exports = function (options) {
       chunkFilename: 'js/[id].chunk.js'
     },
     resolve: {
-      root: ROOT,
-      fallback: path.resolve(__dirname, 'node_modules'),
+      modules: [ROOT, 'node_modules', path.join(__dirname, 'node_modules')],
       extensions: ['', '.js', '.jsx'],
       alias: {
         'app': SRC
       }
     },
     resolveLoader: {
-      root: path.resolve(__dirname, 'node_modules')
+      modules: [ROOT, 'node_modules', path.join(__dirname, 'node_modules')]
     },
     module: {
       loaders: [
         {
           test: /\.js?$/,
-          loader: 'babel',
-          include: SRC
+          loader: 'babel-loader',
+          include: SRC,
+          query: _.extend({cacheDirectory: true}, hipley.babel)
+        },
+        {
+          test: /\.json$/,
+          loader: 'json-loader'
         }
       ]
     },
@@ -57,15 +61,17 @@ module.exports = function (options) {
         async: true,
         minChunks: 3
       })
-    ],
-    babel: _.extend({cacheDirectory: true}, hipley.babel)
+    ]
   }
 
   // Optionally, support vendors splitting.
   if (hipley.options.vendors && hipley.options.vendors.length) {
     conf.entry.vendors = hipley.options.vendors
     conf.plugins = conf.plugins.concat([
-      new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js')
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendors',
+        filename: 'js/vendors.js'
+      })
     ])
   }
 
@@ -83,23 +89,25 @@ module.exports = function (options) {
           'NODE_ENV': JSON.stringify('production')
         }
       }),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+        debug: false
+      }),
       new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(true)
+      new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
     ])
-    if (hipley.options.minify) {
-      conf.plugins = conf.plugins.concat([
-        new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
-      ])
-    }
   }
 
   // Development Sever.
   if (options.development) {
-    conf.debug = true
     conf.entry.app = conf.entry.app.concat([
       'webpack-hot-middleware/client'
     ])
     conf.plugins = conf.plugins.concat([
+      new webpack.LoaderOptionsPlugin({
+        minimize: false,
+        debug: true
+      }),
       new webpack.DefinePlugin({
         'process.env': {
           'BROWSER': JSON.stringify(true),

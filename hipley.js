@@ -16,7 +16,6 @@ var defaults = {
     ui: 3001
   },
   vendors: [],
-  minify: true,
   optional: {
     'react-transform-catch-errors': true
   }
