@@ -43,6 +43,7 @@ var babel = {
       plugins: [
         [require.resolve('babel-plugin-transform-runtime')],
         [require.resolve('babel-plugin-transform-decorators-legacy')],
+        [require.resolve('babel-plugin-add-module-exports')],
         [require.resolve('babel-plugin-react-transform'), {
           'transforms': [
             {
@@ -58,6 +59,7 @@ var babel = {
       plugins: [
         [require.resolve('babel-plugin-transform-runtime')],
         [require.resolve('babel-plugin-transform-decorators-legacy')],
+        [require.resolve('babel-plugin-add-module-exports')],
         [require.resolve('babel-plugin-transform-react-constant-elements')],
         [require.resolve('babel-plugin-transform-react-inline-elements')]
       ]
