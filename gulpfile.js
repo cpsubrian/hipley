@@ -18,15 +18,15 @@ var hipley = require('./')
 
 var ROOT = hipley.root
 var SRC = path.resolve(ROOT, hipley.options.src)
-var BUILD = path.resolve(ROOT, hipley.options.dest)
-var STATS = path.join(BUILD, 'webpack-stats.json')
+var DEST = path.resolve(ROOT, hipley.options.dest)
+var STATS = path.join(DEST, 'webpack-stats.json')
 var PORT = hipley.options.port
 var DEV = hipley.options.devServer
 var copy = hipley.options.copy
 
 // Clean ./build folder.
 gulp.task('clean:build', function (cb) {
-  rimraf(BUILD, cb)
+  rimraf(DEST, cb)
 })
 
 // Initialize browserSync.
@@ -38,7 +38,7 @@ gulp.task('browser-sync', function () {
     open: false,
     notify: false,
     files: [
-      BUILD + '/**/*.html'
+      DEST + '/**/*.html'
     ],
     ghostMode: false
   })
@@ -48,7 +48,7 @@ gulp.task('browser-sync', function () {
 gulp.task('build:copy', function (cb) {
   if (copy) {
     async.each(copy, function (source, next) {
-      ncp(path.resolve(ROOT, source), BUILD, next)
+      ncp(path.resolve(ROOT, source), DEST, next)
     }, cb)
   } else {
     cb()
@@ -71,7 +71,7 @@ gulp.task('build:less', function () {
       cascade: false
     }))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(BUILD + '/css'))
+    .pipe(gulp.dest(DEST + '/css'))
 
   if (browserSync) {
     stream = stream.pipe(browserSync.stream({match: '**/*.css'}))
