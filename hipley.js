@@ -78,7 +78,7 @@ if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
     var babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
     babel = extend(true, {}, babel, babelrc)
   } catch (e) {
-    console.log('Error parsing .babelrc', e)
+    console.error('Error parsing .babelrc', e)
   }
 }
 

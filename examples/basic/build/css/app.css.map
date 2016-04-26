@@ -1,1 +1,0 @@
-{"version":3,"sources":["app.less","app.css"],"names":[],"mappings":"AAAA;EACE,UAAA;EACA,cAAA;EACA,iBAAA;EACA,YAAA;CCCD","file":"app.css","sourcesContent":["body {\n  margin: 0;\n  padding: 50px;\n  background: #eee;\n  color: #555;\n}","body {\n  margin: 0;\n  padding: 50px;\n  background: #eee;\n  color: #555;\n}\n"],"sourceRoot":"/source/"}
