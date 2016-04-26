@@ -5,7 +5,7 @@ var hipley = require('./')
 
 var ROOT = hipley.root
 var SRC = path.resolve(ROOT, hipley.options.src, 'js')
-var BUILD = path.resolve(ROOT, hipley.options.dest)
+var DEST = path.resolve(ROOT, hipley.options.dest)
 
 module.exports = function (options) {
   // Initialize conf.
@@ -18,7 +18,7 @@ module.exports = function (options) {
       app: ['./app']
     },
     output: {
-      path: BUILD,
+      path: DEST,
       publicPath: '/',
       filename: 'js/[name].js',
       chunkFilename: 'js/[id].chunk.js'

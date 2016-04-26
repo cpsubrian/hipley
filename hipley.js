@@ -1,7 +1,6 @@
 var fs = require('fs')
 var path = require('path')
 var extend = require('extend')
-var _ = require('lodash')
 
 var ROOT = process.env.__root || process.cwd()
 
@@ -10,16 +9,13 @@ var defaults = {
   proxy: process.env.__proxy || null,
   cmd: process.env.__cmd || null,
   src: process.env.__src || 'src',
-  dest: process.env.__dest || 'build',
+  dest: process.env.__dest || 'dist',
   static: process.env.__static || 'public',
   devServer: process.env.__devServer || 3002,
   browserSync: {
     ui: 3001
   },
-  vendors: [],
-  optional: {
-    'react-transform-catch-errors': true
-  }
+  vendors: []
 }
 
 // Load .hipleyrc.
@@ -48,16 +44,13 @@ var babel = {
         [require.resolve('babel-plugin-transform-runtime')],
         [require.resolve('babel-plugin-transform-decorators-legacy')],
         [require.resolve('babel-plugin-react-transform'), {
-          'transforms': _.compact([
+          'transforms': [
             {
               'transform': require.resolve('react-transform-hmr'),
               'imports': ['react'],
               'locals': ['module']
-            }, (options.optional['react-transform-catch-errors'] && {
-              'transform': require.resolve('react-transform-catch-errors'),
-              'imports': ['react', 'redbox-react']
-            })
-          ])
+            }
+          ]
         }]
       ]
     },
