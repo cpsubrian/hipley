@@ -11,9 +11,11 @@ program
 // Prepare hipley based on args.
 hipley.prepare(program)
 
+// Get the babel config.
+var babel = hipley.getBabel()
+
 // Generate babel-register options.
-var output = _.merge({},
-  _.omit(hipley.babel, 'env'),
-  hipley.babel.env.production
-)
+var output = _.merge({}, _.omit(babel, 'env'), babel.env.production)
+
+// Spit out the config.
 console.log(JSON.stringify(output, null, 2))

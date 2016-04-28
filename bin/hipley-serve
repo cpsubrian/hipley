@@ -16,7 +16,7 @@ program
 hipley.prepare(program)
 
 // Serve Production Build
-if (!fs.existsSync(path.resolve(hipley.root, hipley.options.dest, 'js/app.js'))) {
+if (!fs.existsSync(path.resolve(hipley.options.root, hipley.options.dest, 'js/app.js'))) {
   hipley.runGulp('build-prod', {NODE_ENV: 'production'}, function () {
     hipley.run({
       cmd: 'node',

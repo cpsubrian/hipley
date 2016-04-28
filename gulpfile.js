@@ -16,7 +16,7 @@ var BrowserSync = require('browser-sync')
 var browserSync
 var hipley = require('./')
 
-var ROOT = hipley.root
+var ROOT = hipley.options.root
 var SRC = path.resolve(ROOT, hipley.options.src)
 var DEST = path.resolve(ROOT, hipley.options.dest)
 var STATS = path.join(DEST, 'webpack-stats.json')

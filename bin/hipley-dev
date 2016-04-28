@@ -36,7 +36,7 @@ if (hipley.options.cmd) {
       hipley.run({
         cmd: args.shift(),
         args: args,
-        cwd: hipley.root,
+        cwd: hipley.options.root,
         env: {
           NODE_ENV: 'development'
         }
