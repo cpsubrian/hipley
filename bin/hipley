@@ -6,8 +6,8 @@ program
   .version(pkg.version)
   .command('dev', 'Run a development server')
   .command('build', 'Build the production bundles')
-  .command('serve', 'Run a production server')
-  .command('init [type]', 'Initialize a new React project in the current directory')
+  .command('serve', 'Serve the production build')
+  .command('init [type]', 'Initialize a new project based on example templates')
   .command('register', 'Output options for babel-register as JSON')
 
 program.parse(process.argv)
