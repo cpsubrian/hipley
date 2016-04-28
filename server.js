@@ -4,7 +4,7 @@ var express = require('express')
 var app = express()
 var hipley = require('./')
 
-var ROOT = hipley.root
+var ROOT = hipley.options.root
 var DEST = path.resolve(ROOT, hipley.options.dest)
 var STATIC = path.resolve(ROOT, hipley.options.static)
 var PORT = hipley.options.port

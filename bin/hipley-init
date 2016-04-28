@@ -20,11 +20,11 @@ var configData = {}
 var exampleDir = path.resolve(__dirname, '../examples/' + name)
 if (fs.existsSync(exampleDir)) {
   var examplePkg = JSON.parse(fs.readFileSync(path.join(exampleDir, 'package.json')))
-  init(hipley.root, initFile, configData, function (err, data) {
+  init(hipley.options.root, initFile, configData, function (err, data) {
     if (err) throw err
     var newPkg = _.extend({}, examplePkg, data)
-    fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(newPkg, null, 2))
-    ncp(exampleDir, hipley.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
+    fs.writeFileSync(path.resolve(hipley.options.root, 'package.json'), JSON.stringify(newPkg, null, 2))
+    ncp(exampleDir, hipley.options.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
       if (err) throw err
       hipley.run({cmd: 'npm', args: ['install']})
     })

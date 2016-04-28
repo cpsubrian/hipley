@@ -3,7 +3,7 @@ var path = require('path')
 var webpack = require('webpack')
 var hipley = require('./')
 
-var ROOT = hipley.root
+var ROOT = hipley.options.root
 var SRC = path.resolve(ROOT, hipley.options.src, 'js')
 var DEST = path.resolve(ROOT, hipley.options.dest)
 
@@ -39,7 +39,7 @@ module.exports = function (options) {
           test: /\.js?$/,
           loader: 'babel-loader',
           include: SRC,
-          query: _.extend({cacheDirectory: true}, hipley.babel)
+          query: _.extend({cacheDirectory: true}, hipley.getBabel())
         },
         {
           test: /\.json$/,
