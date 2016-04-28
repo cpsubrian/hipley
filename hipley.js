@@ -1,6 +1,8 @@
 var fs = require('fs')
 var path = require('path')
+var spawn = require('child_process').spawn
 var extend = require('extend')
+var _ = require('lodash')
 
 var ROOT = process.env.__root || process.cwd()
 
@@ -77,7 +79,7 @@ if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
   }
 }
 
-module.exports = {
+var hipley = module.exports = {
   root: ROOT,
   defaults: defaults,
   rc: rc,
@@ -85,5 +87,56 @@ module.exports = {
   options: options,
   set: function (key, val) {
     options[key] = val
+  },
+
+  // Prepare options from program arguments.
+  prepare: function (program) {
+    var keys = ['port', 'proxy', 'cmd', 'src', 'dest']
+    keys.forEach(function (key) {
+      if (program[key]) {
+        hipley.set(key, program[key])
+      }
+    })
+  },
+
+  // Helper to merge options into env.
+  getEnv: function (env) {
+    var optionEnv = {__root: hipley.root}
+    Object.keys(hipley.options).forEach(function (key) {
+      optionEnv['__' + key] = hipley.options[key]
+    })
+    return _.pickBy(_.extend(optionEnv, process.env, env || {}), _.identity)
+  },
+
+  // Helper to spawn a command.
+  run: function (opts, cb) {
+    var proc = spawn(opts.cmd, opts.args, {env: hipley.getEnv(opts.env || {})})
+    proc.stdout.pipe(process.stdout)
+    proc.stderr.pipe(process.stderr)
+    if (cb) {
+      proc.on('exit', cb)
+    }
+    return proc
+  },
+
+  // Helper to run a gulp task.
+  runGulp: function (task, env, cb) {
+    return hipley.run({
+      cmd: path.resolve(__dirname, 'node_modules/.bin/gulp'),
+      args: [task, '--cwd', __dirname],
+      env: hipley.getEnv(env)
+    }, cb)
+  },
+
+  printHelp: function () {
+    console.log([
+      '',
+      '  Configuration can be added to a .hipleyrc json file.',
+      '',
+      '  Defaults:',
+      '',
+      JSON.stringify(hipley.defaults, null, 2).split('\n').map(function (line) { return '    ' + line }).join('\n'),
+      ''
+    ].join('\n'))
   }
 }

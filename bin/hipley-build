@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+var program = require('commander')
+var hipley = require('../')
+
+// Parse args
+program
+  .option('--src [dir]', 'The directory containing the source files (src/)')
+  .option('--dest [dir]', 'The directory to use for the build (build/)')
+  .on('--help', hipley.printHelp)
+  .parse(process.argv)
+
+// Prepare hipley based on args.
+hipley.prepare(program)
+
+// Build for production.
+hipley.runGulp('build-prod', {NODE_ENV: 'production'})

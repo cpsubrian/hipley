@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+var program = require('commander')
+var path = require('path')
+var fs = require('fs')
+var hipley = require('../')
+var init = require('init-package-json')
+var ncp = require('ncp')
+var _ = require('lodash')
+
+// Parse args
+program.parse(process.argv)
+
+// Prepare hipley based on args.
+hipley.prepare(program)
+
+// Initialize a new project based on our examples.
+var name = program.args[0] || 'basic'
+var initFile = path.resolve(process.env.HOME, '.npm-init')
+var configData = {}
+var exampleDir = path.resolve(__dirname, '../examples/' + name)
+if (fs.existsSync(exampleDir)) {
+  var examplePkg = JSON.parse(fs.readFileSync(path.join(exampleDir, 'package.json')))
+  init(hipley.root, initFile, configData, function (err, data) {
+    if (err) throw err
+    var newPkg = _.extend({}, examplePkg, data)
+    fs.writeFileSync(path.resolve(hipley.root, 'package.json'), JSON.stringify(newPkg, null, 2))
+    ncp(exampleDir, hipley.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
+      if (err) throw err
+      hipley.run({cmd: 'npm', args: ['install']})
+    })
+  })
+} else {
+  throw new Error('Sorry, could not find a recipe for "' + name + '"')
+}
