@@ -3,6 +3,7 @@ var path = require('path')
 var spawn = require('child_process').spawn
 var extend = require('extend')
 var _ = require('lodash')
+var babelConfig = require('./config/babel.config.js')
 
 var ROOT = process.env.hipley_root || process.cwd()
 
@@ -54,7 +55,7 @@ var hipley = module.exports = {
   // Get our base babel options and merge in user's .babelrc.
   getBabel: function () {
     // Base babel options.
-    var babel = require('./babel.config.js')(hipley.options)
+    var babel = babelConfig(hipley.options)
 
     // Read app's babelrc and merge into base babel options.
     if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
