@@ -11,7 +11,7 @@ module.exports = function (options) {
   // Initialize conf.
   var conf = {
     cache: true,
-    devtool: 'source-map',
+    devtool: 'sourcemap',
     context: SRC,
     root: SRC,
     entry: {
@@ -24,14 +24,13 @@ module.exports = function (options) {
       chunkFilename: 'js/[id].chunk.js'
     },
     resolve: {
-      modules: [ROOT, 'node_modules', path.join(__dirname, '../node_modules')],
-      extensions: ['', '.js', '.jsx'],
-      alias: {
-        'app': SRC
-      }
+      root: ROOT,
+      fallback: path.join(__dirname, '../node_modules'),
+      extensions: ['', '.js', '.jsx']
     },
     resolveLoader: {
-      modules: [ROOT, 'node_modules', path.join(__dirname, '../node_modules')]
+      root: ROOT,
+      fallback: path.join(__dirname, '../node_modules')
     },
     module: {
       loaders: [
@@ -89,25 +88,19 @@ module.exports = function (options) {
           'NODE_ENV': JSON.stringify('production')
         }
       }),
-      new webpack.LoaderOptionsPlugin({
-        minimize: true,
-        debug: false
-      }),
       new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.OccurenceOrderPlugin(true),
       new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
     ])
   }
 
   // Development Sever.
   if (options.development) {
+    conf.debug = true
     conf.entry.app = conf.entry.app.concat([
       'webpack-hot-middleware/client'
     ])
     conf.plugins = conf.plugins.concat([
-      new webpack.LoaderOptionsPlugin({
-        minimize: false,
-        debug: true
-      }),
       new webpack.DefinePlugin({
         'process.env': {
           'BROWSER': JSON.stringify(true),
