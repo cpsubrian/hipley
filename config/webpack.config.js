@@ -1,7 +1,7 @@
 var _ = require('lodash')
 var path = require('path')
 var webpack = require('webpack')
-var hipley = require('./')
+var hipley = require('../')
 
 var ROOT = hipley.options.root
 var SRC = path.resolve(ROOT, hipley.options.src, 'js')
@@ -24,14 +24,14 @@ module.exports = function (options) {
       chunkFilename: 'js/[id].chunk.js'
     },
     resolve: {
-      modules: [ROOT, 'node_modules', path.join(__dirname, 'node_modules')],
+      modules: [ROOT, 'node_modules', path.join(__dirname, '../node_modules')],
       extensions: ['', '.js', '.jsx'],
       alias: {
         'app': SRC
       }
     },
     resolveLoader: {
-      modules: [ROOT, 'node_modules', path.join(__dirname, 'node_modules')]
+      modules: [ROOT, 'node_modules', path.join(__dirname, '../node_modules')]
     },
     module: {
       loaders: [

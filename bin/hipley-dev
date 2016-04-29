@@ -19,7 +19,7 @@ hipley.prepare(program)
 // Start development server.
 hipley.run({
   cmd: 'node',
-  args: [path.resolve(__dirname, '../devServer.js')],
+  args: [path.resolve(__dirname, '../lib/devServer.js')],
   env: {
     NODE_ENV: 'development'
   }

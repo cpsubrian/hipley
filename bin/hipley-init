@@ -26,7 +26,7 @@ if (fs.existsSync(exampleDir)) {
     fs.writeFileSync(path.resolve(hipley.options.root, 'package.json'), JSON.stringify(newPkg, null, 2))
     ncp(exampleDir, hipley.options.root, {filter: function (name) { return !name.match(/^(\/.git)|(package\.json)|(build)/) }}, function (err) {
       if (err) throw err
-      hipley.run({cmd: 'npm', args: ['install']})
+      console.log('\nFinished! Now you way want to `npm install` and `hipley dev`.')
     })
   })
 } else {

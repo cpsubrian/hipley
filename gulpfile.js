@@ -11,7 +11,7 @@ var plumber = require('gulp-plumber')
 var runSequence = require('run-sequence')
 var sourcemaps = require('gulp-sourcemaps')
 var webpack = require('webpack')
-var webpackconf = require('./webpack.config')
+var webpackconf = require('./config/webpack.config')
 var BrowserSync = require('browser-sync')
 var browserSync
 var hipley = require('./')

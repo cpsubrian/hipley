@@ -20,14 +20,14 @@ if (!fs.existsSync(path.resolve(hipley.options.root, hipley.options.dest, 'js/ap
   hipley.runGulp('build-prod', {NODE_ENV: 'production'}, function () {
     hipley.run({
       cmd: 'node',
-      args: [path.resolve(__dirname, '../server.js')],
+      args: [path.resolve(__dirname, '../lib/server.js')],
       env: {NODE_ENV: 'production'}
     })
   })
 } else {
   hipley.run({
     cmd: 'node',
-    args: [path.resolve(__dirname, '../server.js')],
+    args: [path.resolve(__dirname, '../lib/server.js')],
     env: {NODE_ENV: 'production'}
   })
 }
