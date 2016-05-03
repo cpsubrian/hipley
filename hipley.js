@@ -15,7 +15,8 @@ var defaults = {
   browserSync: {
     ui: 3001
   },
-  vendors: []
+  vendors: [],
+  minify: true
 }
 
 // Load .hipleyrc.

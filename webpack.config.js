@@ -14,7 +14,7 @@ module.exports = function (options) {
     root: SRC,
     devtool: 'sourcemap',
     entry: {
-      app: ['./app']
+      app: [require.resolve('babel-core/polyfill'), './app']
     },
     output: {
       path: BUILD,
@@ -72,7 +72,7 @@ module.exports = function (options) {
 
   // Production.
   if (options.production) {
-    conf.plugins = conf.plugins.concat(
+    conf.plugins = conf.plugins.concat([
       new webpack.DefinePlugin({
         'process.env': {
           'BROWSER': JSON.stringify(true),
@@ -80,9 +80,13 @@ module.exports = function (options) {
         }
       }),
       new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(true),
-      new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
-    )
+      new webpack.optimize.OccurenceOrderPlugin(true)
+    ])
+    if (hipley.options.minify) {
+      conf.plugins = conf.plugins.concat([
+        new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
+      ])
+    }
   }
 
   // Development Sever.
