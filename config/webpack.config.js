@@ -15,7 +15,7 @@ module.exports = function (options) {
     context: SRC,
     root: SRC,
     entry: {
-      app: [require.resolve('babel-core/polyfill'), './app']
+      app: [require.resolve('babel-polyfill'), './app']
     },
     output: {
       path: DEST,
