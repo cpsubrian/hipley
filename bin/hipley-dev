@@ -31,7 +31,7 @@ var proc = hipley.runGulp('default', {NODE_ENV: 'development'})
 // Start the cmd (if needed).
 if (hipley.options.cmd) {
   proc.stdout.on('data', function (chunk) {
-    if (chunk.toString().match(/Finished \'default\'/)) {
+    if (chunk.toString().match(/Finished 'default'/)) {
       var args = hipley.options.cmd.split(' ')
       hipley.run({
         cmd: args.shift(),
