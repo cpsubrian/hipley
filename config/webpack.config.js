@@ -12,10 +12,11 @@ module.exports = function (options) {
   var conf = {
     cache: true,
     devtool: 'sourcemap',
-    context: SRC,
-    root: SRC,
     entry: {
-      app: [require.resolve('babel-polyfill'), './app']
+      app: [
+        require.resolve('babel-polyfill'),
+        path.resolve(SRC, './app')
+      ]
     },
     output: {
       path: DEST,
@@ -24,34 +25,39 @@ module.exports = function (options) {
       chunkFilename: 'js/[id].chunk.js'
     },
     resolve: {
-      root: ROOT,
-      fallback: path.join(__dirname, '../node_modules'),
-      extensions: ['', '.js', '.jsx']
+      modules: [
+        path.join(ROOT, './node_modules'),
+        path.join(__dirname, '../node_modules')
+      ]
     },
     resolveLoader: {
-      root: ROOT,
-      fallback: path.join(__dirname, '../node_modules')
+      modules: [
+        path.join(ROOT, './node_modules'),
+        path.join(__dirname, '../node_modules')
+      ]
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.js?$/,
-          loader: 'babel-loader',
           include: SRC,
-          query: _.extend({cacheDirectory: true}, hipley.getBabel())
-        },
-        {
-          test: /\.json$/,
-          loader: 'json-loader'
+          use: [{
+            loader: 'babel-loader',
+            options: _.extend({cacheDirectory: true}, hipley.getBabel())
+          }]
         }
       ]
     },
     plugins: [
-      new webpack.NoErrorsPlugin(),
       new webpack.ProvidePlugin({
-        'Promise': 'exports?global.Promise!es6-promise',
-        'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
-        'window.fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+        'Promise': 'exports-loader?global.Promise!es6-promise',
+        'fetch': 'imports-loader?this=>global!exports?global.fetch!whatwg-fetch',
+        'window.fetch': 'imports-loader?this=>global!exports?global.fetch!whatwg-fetch'
+      }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          context: SRC
+        }
       }),
       // If using code splitting, dedupe commons in child chunks.
       new webpack.optimize.CommonsChunkPlugin({
@@ -88,15 +94,17 @@ module.exports = function (options) {
           'NODE_ENV': JSON.stringify('production')
         }
       }),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(true),
-      new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true,
+        compress: {
+          warnings: false
+        }
+      })
     ])
   }
 
   // Development Sever.
   if (options.development) {
-    conf.debug = true
     conf.entry.app = conf.entry.app.concat([
       'webpack-hot-middleware/client'
     ])
