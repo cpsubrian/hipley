@@ -56,12 +56,12 @@ var hipley = module.exports = {
   },
 
   // Get our base babel options and merge in user's .babelrc.
-  getBabel: function () {
+  getBabel: function (ignoreLocal) {
     // Base babel options.
     var babel = babelConfig(hipley.options)
 
     // Read app's babelrc and merge into base babel options.
-    if (fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
+    if (!ignoreLocal && fs.existsSync(path.resolve(ROOT, '.babelrc'))) {
       try {
         var babelrc = JSON.parse(fs.readFileSync(path.resolve(ROOT, '.babelrc')))
         babel = extend(true, {}, babel, babelrc)
