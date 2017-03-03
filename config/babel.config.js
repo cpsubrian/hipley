@@ -5,12 +5,14 @@ module.exports = function (options) {
       require.resolve('babel-preset-react'),
       require.resolve('babel-preset-stage-0')
     ],
+    plugins: [
+      [require.resolve('babel-plugin-transform-runtime')],
+      [require.resolve('babel-plugin-transform-decorators-legacy')],
+      [require.resolve('babel-plugin-add-module-exports')]
+    ],
     env: {
       development: {
         plugins: [
-          [require.resolve('babel-plugin-transform-runtime')],
-          [require.resolve('babel-plugin-transform-decorators-legacy')],
-          [require.resolve('babel-plugin-add-module-exports')],
           [require.resolve('babel-plugin-react-transform'), {
             'transforms': [
               {
@@ -24,9 +26,6 @@ module.exports = function (options) {
       },
       production: {
         plugins: [
-          [require.resolve('babel-plugin-transform-runtime')],
-          [require.resolve('babel-plugin-transform-decorators-legacy')],
-          [require.resolve('babel-plugin-add-module-exports')],
           [require.resolve('babel-plugin-transform-react-constant-elements')],
           [require.resolve('babel-plugin-transform-react-inline-elements')]
         ]
