@@ -80,7 +80,6 @@ var hipley = module.exports = {
       config,
       _.get(config, ['env', process.env.BABEL_ENV || process.env.NODE_ENV || 'development']) || {}
     )
-    console.log(config)
     return config
   },
 
