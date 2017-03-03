@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+var program = require('commander')
+var path = require('path')
+var fs = require('fs')
+var hipley = require('../')
+
+// Parse args
+program
+  .option('-p, --port [port]', 'Port to run the server on (3000)')
+  .option('--src [dir]', 'The directory containing the source files (src/)')
+  .option('--dest [dir]', 'The directory to use for the build (build/)')
+  .on('--help', hipley.printHelp)
+  .parse(process.argv)
+
+// Prepare hipley based on args.
+hipley.prepare(program)
+
+// Serve Production Build
+if (!fs.existsSync(path.resolve(hipley.options.root, hipley.options.dest, 'js/app.js'))) {
+  hipley.runGulp('build-prod', {NODE_ENV: 'production'}, function () {
+    hipley.run({
+      cmd: 'node',
+      args: [path.resolve(__dirname, '../lib/server.js')],
+      env: {NODE_ENV: 'production'}
+    })
+  })
+} else {
+  hipley.run({
+    cmd: 'node',
+    args: [path.resolve(__dirname, '../lib/server.js')],
+    env: {NODE_ENV: 'production'}
+  })
+}

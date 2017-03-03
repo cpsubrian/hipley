@@ -1,50 +1,63 @@
+var _ = require('lodash')
 var path = require('path')
 var webpack = require('webpack')
-var hipley = require('./')
+var hipley = require('../')
 
-var ROOT = hipley.root
+var ROOT = hipley.options.root
 var SRC = path.resolve(ROOT, hipley.options.src, 'js')
-var BUILD = path.resolve(ROOT, hipley.options.dest)
+var DEST = path.resolve(ROOT, hipley.options.dest)
 
 module.exports = function (options) {
   // Initialize conf.
   var conf = {
     cache: true,
-    context: SRC,
-    root: SRC,
     devtool: 'sourcemap',
     entry: {
-      app: [require.resolve('babel-core/polyfill'), './app']
+      app: [
+        require.resolve('babel-polyfill'),
+        path.resolve(SRC, './app')
+      ]
     },
     output: {
-      path: BUILD,
+      path: DEST,
       publicPath: '/',
       filename: 'js/[name].js',
       chunkFilename: 'js/[id].chunk.js'
     },
     resolve: {
-      root: ROOT,
-      fallback: path.resolve(__dirname, 'node_modules'),
-      extensions: ['', '.js', '.jsx'],
-      alias: {
-        'app': SRC
-      }
+      modules: [
+        path.join(ROOT, './node_modules'),
+        path.join(__dirname, '../node_modules')
+      ]
     },
     resolveLoader: {
-      root: path.resolve(__dirname, 'node_modules')
+      modules: [
+        path.join(ROOT, './node_modules'),
+        path.join(__dirname, '../node_modules')
+      ]
     },
     module: {
-      loaders: [
-        { test: /\.js?$/, loader: 'babel', include: SRC }
+      rules: [
+        {
+          test: /\.js?$/,
+          include: SRC,
+          use: [{
+            loader: 'babel-loader',
+            options: _.extend({cacheDirectory: true}, hipley.getBabel())
+          }]
+        }
       ]
     },
     plugins: [
-      new webpack.NoErrorsPlugin(),
-      // Browser shims.
       new webpack.ProvidePlugin({
-        'Promise': 'exports?global.Promise!es6-promise',
-        'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
-        'window.fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+        'Promise': 'exports-loader?global.Promise!es6-promise',
+        'fetch': 'imports-loader?this=>global!exports?global.fetch!whatwg-fetch',
+        'window.fetch': 'imports-loader?this=>global!exports?global.fetch!whatwg-fetch'
+      }),
+      new webpack.LoaderOptionsPlugin({
+        options: {
+          context: SRC
+        }
       }),
       // If using code splitting, dedupe commons in child chunks.
       new webpack.optimize.CommonsChunkPlugin({
@@ -53,15 +66,17 @@ module.exports = function (options) {
         async: true,
         minChunks: 3
       })
-    ],
-    babel: hipley.babel
+    ]
   }
 
   // Optionally, support vendors splitting.
   if (hipley.options.vendors && hipley.options.vendors.length) {
     conf.entry.vendors = hipley.options.vendors
     conf.plugins = conf.plugins.concat([
-      new webpack.optimize.CommonsChunkPlugin('vendors', 'js/vendors.js')
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendors',
+        filename: 'js/vendors.js'
+      })
     ])
   }
 
@@ -79,19 +94,17 @@ module.exports = function (options) {
           'NODE_ENV': JSON.stringify('production')
         }
       }),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.OccurenceOrderPlugin(true)
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: true,
+        compress: {
+          warnings: false
+        }
+      })
     ])
-    if (hipley.options.minify) {
-      conf.plugins = conf.plugins.concat([
-        new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
-      ])
-    }
   }
 
   // Development Sever.
   if (options.development) {
-    conf.debug = true
     conf.entry.app = conf.entry.app.concat([
       'webpack-hot-middleware/client'
     ])

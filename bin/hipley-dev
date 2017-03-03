@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+var program = require('commander')
+var path = require('path')
+var hipley = require('../')
+
+// Parse args
+program
+  .option('-p, --port [port]', 'Port to run the dev server on (3000)')
+  .option('-r, --proxy [port]', 'Proxy requests to another port')
+  .option('-c, --cmd [command]', 'Spawn a command, for example a node server')
+  .option('--src [dir]', 'The directory containing the source files (src/)')
+  .option('--dest [dir]', 'The directory to use for the build (build/)')
+  .on('--help', hipley.printHelp)
+  .parse(process.argv)
+
+// Prepare hipley based on args.
+hipley.prepare(program)
+
+// Start development server.
+hipley.run({
+  cmd: 'node',
+  args: [path.resolve(__dirname, '../lib/devServer.js')],
+  env: {
+    NODE_ENV: 'development'
+  }
+})
+
+// Run Gulp.
+var proc = hipley.runGulp('default', {NODE_ENV: 'development'})
+
+// Start the cmd (if needed).
+if (hipley.options.cmd) {
+  proc.stdout.on('data', function (chunk) {
+    if (chunk.toString().match(/Finished 'default'/)) {
+      var args = hipley.options.cmd.split(' ')
+      hipley.run({
+        cmd: args.shift(),
+        args: args,
+        cwd: hipley.options.root,
+        env: {
+          NODE_ENV: 'development'
+        }
+      })
+    }
+  })
+}

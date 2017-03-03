@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+var program = require('commander')
+var hipley = require('../')
+var _ = require('lodash')
+
+// Parse args
+program
+  .on('--help', hipley.printHelp)
+  .parse(process.argv)
+
+// Prepare hipley based on args.
+hipley.prepare(program)
+
+// Get the babel config.
+var babel = hipley.getBabel()
+
+// Generate babel-register options.
+var output = _.merge({}, _.omit(babel, 'env'), babel.env.production)
+
+// Spit out the config.
+console.log(JSON.stringify(output, null, 2))
