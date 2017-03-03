@@ -78,8 +78,9 @@ var hipley = module.exports = {
     let config = hipley.getBabel()
     config = _.merge(
       config,
-      _.get(config, ['env', process.BABEL_ENV || process.NODE_ENV || 'development']) || {}
+      _.get(config, ['env', process.env.BABEL_ENV || process.env.NODE_ENV || 'development']) || {}
     )
+    console.log(config)
     return config
   },
 
