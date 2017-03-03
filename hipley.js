@@ -73,6 +73,16 @@ var hipley = module.exports = {
     return babel
   },
 
+  // Babel preset that loads the hipley conf.
+  buildPreset (context, opts) {
+    let config = hipley.getBabel()
+    config = _.merge(
+      config,
+      _.get(config, ['env', process.NODE_ENV || 'development']) || {}
+    )
+    return config
+  },
+
   // Helper to merge options into env.
   getEnv: function (env) {
     var optionEnv = {}
